@@ -1,0 +1,4 @@
+export type DurableOperationState = "created" | "admitted" | "queued" | "dispatched" | "completed" | "uncertain" | "expired" | "rejected";
+export type ReplayDecision = "dispatch" | "return-recorded-result" | "refuse-uncertain" | "refuse-terminal";
+export function reconnectDecision(state: DurableOperationState, effectful: boolean): ReplayDecision { switch (state) { case "created": case "admitted": case "queued": return "dispatch"; case "completed": return "return-recorded-result"; case "dispatched": case "uncertain": return effectful ? "refuse-uncertain" : "refuse-uncertain"; case "expired": case "rejected": return "refuse-terminal"; } }
+export function assertIdempotencyBinding(existingDigest: string | null, incomingDigest: string): void { if (existingDigest !== null && existingDigest !== incomingDigest) throw new Error("idempotency key is already bound to a different operation digest"); }

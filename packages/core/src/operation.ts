@@ -1,0 +1,7 @@
+import { canonicalJson, sha256Hex } from "./canonical.ts";
+export type RiskClass = "read" | "write" | "exec" | "admin";
+export type OperationAuthority = { subject: string; oauthClientId: string; resource: string; deviceId?: string; };
+export type OperationEnvelope = { version: 1; operationId: string; authority: OperationAuthority; tool: { name: string; version: string; risk: RiskClass }; arguments: unknown; idempotencyKey: string; issuedAt: string; expiresAt: string; nonce: string; };
+export async function operationDigest(envelope: OperationEnvelope): Promise<string> { return sha256Hex(`mcp-edge.operation.v1\n${canonicalJson(envelope)}`); }
+export async function approvalCommitment(operations: Array<{ operationId: string; digest: string }>): Promise<string> { const normalized = operations.map((item) => ({ operationId: item.operationId, digest: item.digest.toLowerCase() })).sort((a, b) => a.operationId.localeCompare(b.operationId)); return sha256Hex(`mcp-edge.approval.v1\n${canonicalJson(normalized)}`); }
+export function assertFresh(envelope: OperationEnvelope, now = Date.now()): void { const issuedAt = Date.parse(envelope.issuedAt); const expiresAt = Date.parse(envelope.expiresAt); if (!Number.isFinite(issuedAt) || !Number.isFinite(expiresAt)) throw new Error("invalid operation timestamps"); if (expiresAt <= issuedAt) throw new Error("operation expiry must be after issue time"); if (now >= expiresAt) throw new Error("operation expired"); if (issuedAt > now + 60_000) throw new Error("operation issued too far in the future"); }
