@@ -1,0 +1,7 @@
+mcp-edge-kit
+Copyright 2026 mcp-edge-kit contributors
+
+This project documents and implements reusable architectural patterns learned
+while building OwnMesh. It is intentionally a separate reference project and
+contains no deployment credentials, private configuration, or product-specific
+business logic.
