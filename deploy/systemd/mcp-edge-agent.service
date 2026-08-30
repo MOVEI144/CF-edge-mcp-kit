@@ -1,0 +1,20 @@
+[Unit]
+Description=MCP Edge device agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=mcp-edge
+Group=mcp-edge
+EnvironmentFile=/etc/mcp-edge-agent.env
+ExecStart=/usr/bin/node /opt/mcp-edge-kit/apps/device-agent/dist/agent.js
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
