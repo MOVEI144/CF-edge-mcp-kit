@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@cloudflare/workers-oauth-provider": "^0.10.3",
+    "@cloudflare/workers-oauth-provider": "^1.2.1",
     "@modelcontextprotocol/server": "^2.0.0",
     "@simplewebauthn/server": "^13.3.2",
     "agents": "^0.22.0",
